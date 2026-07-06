@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { Menu, Moon, ShoppingBag, Sun, X } from "lucide-react";
+import { Moon, ShoppingBag, Sun } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 
@@ -9,7 +9,6 @@ function Navbar() {
   const { token, logout } = useAuth();
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const storedTheme = localStorage.getItem("ecomus-theme");
@@ -29,7 +28,6 @@ function Navbar() {
   const handleLogout = () => {
     logout();
     navigate("/login");
-    setMobileMenuOpen(false);
   };
 
   return (
@@ -45,8 +43,7 @@ function Navbar() {
           <span>Ecomus</span>
         </Link>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex md:items-center md:gap-2 lg:gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <NavLink
             to="/"
             className="rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
@@ -107,92 +104,7 @@ function Navbar() {
             </>
           )}
         </div>
-
-        {/* Mobile Menu Button */}
-        <button
-          type="button"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          className="md:hidden rounded-full p-2.5 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-          aria-label="Toggle menu"
-        >
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
       </nav>
-
-      {/* Mobile Navigation */}
-      {mobileMenuOpen && (
-        <div className="border-t border-slate-200 bg-white/95 backdrop-blur-xl dark:border-[#2f261f]/70 dark:bg-[#0f172a]/95 md:hidden">
-          <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 space-y-3">
-            <NavLink
-              to="/"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-            >
-              Home
-            </NavLink>
-
-            <NavLink
-              to="/cart"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-            >
-              <ShoppingBag size={18} />
-              Cart
-              {cartCount > 0 && (
-                <span className="flex min-h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-semibold text-white">
-                  {cartCount}
-                </span>
-              )}
-            </NavLink>
-
-            {token ? (
-              <>
-                <NavLink
-                  to="/profile"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-                >
-                  Profile
-                </NavLink>
-                <button
-                  onClick={handleLogout}
-                  className="w-full rounded-full bg-orange-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-orange-700"
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <NavLink
-                  to="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-                >
-                  Login
-                </NavLink>
-                <NavLink
-                  to="/register"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-full bg-orange-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-orange-700"
-                >
-                  Register
-                </NavLink>
-              </>
-            )}
-
-            <div className="pt-2 border-t border-slate-200 dark:border-slate-700">
-              <button
-                type="button"
-                onClick={() => setDarkMode((value) => !value)}
-                className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-              >
-                {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-                {darkMode ? "Light Mode" : "Dark Mode"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </header>
   );
 }

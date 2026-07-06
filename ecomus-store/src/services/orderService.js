@@ -54,6 +54,18 @@ const normalizeOrders = (responseData) => {
 export const buyNow = async (orderData) => {
   try {
     const res = await API.post("/api/auth/orders/buy", orderData);
+    const order = res.data?.order || res.data;
+    
+    // Persist the successful order to localStorage
+    if (order) {
+      persistOrder({
+        ...order,
+        items: order.items || [orderData],
+        total: order.total || Number(orderData.quantity || 1) * Number(orderData.price || 0),
+        source: "buy-now",
+      });
+    }
+    
     return res.data;
   } catch (error) {
     if (error.response?.status === 404 || error.response?.status === 400) {
@@ -75,6 +87,21 @@ export const buyNow = async (orderData) => {
 export const checkoutCart = async (items) => {
   try {
     const res = await API.post("/api/auth/orders/checkout", { items });
+    const order = res.data?.order || res.data;
+    
+    // Persist the successful order to localStorage
+    if (order) {
+      persistOrder({
+        ...order,
+        items: order.items || items,
+        total: order.total || items.reduce(
+          (sum, item) => sum + Number(item.price || 0) * Number(item.quantity || 1),
+          0,
+        ),
+        source: "checkout",
+      });
+    }
+    
     return res.data;
   } catch (error) {
     if (error.response?.status === 404 || error.response?.status === 400) {
